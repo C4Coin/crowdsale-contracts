@@ -2,8 +2,8 @@
 
 Smart contracts for C4Coin's forthcoming crowdsale
 
-* `develop` — [add circleci badge]
-* `master` — [add circleci badge]
+* `develop` — [![CircleCI](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/develop.svg?style=svg)](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/develop)
+* `master` — [![CircleCI](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/master.svg?style=svg)](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/master)
 
 ## Overview
 
