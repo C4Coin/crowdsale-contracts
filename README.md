@@ -7,9 +7,19 @@ Smart contracts for C4Coin's forthcoming crowdsale
 
 ## Overview
 
-It is proposed that C4Coin will launch a [Regulation A+](https://en.wikipedia.org/wiki/Regulation_A#Regulation_A+) crowdsale, granting buyers of its tokens stock in the company.
+It is proposed that C4Coin will launch a [Regulation A+](https://en.wikipedia.org/wiki/Regulation_A#Regulation_A+) compatible token, where each issued token corresponds to a unit of stock in the company.
 
-Such a crowd sale must allow for the creation and maintenance of corporate records, and as such has the following high-level requirements.
+### Covering Legislation
+
+Ref: [Delaware State Senate, 149th General Assembly, Senate Bill No. 69: An act to Amend Title 8 of the Delaware Code Relating to the General Corporation Law.](https://legis.delaware.gov/json/BillDetail/GenerateHtmlDocument?legislationId=25730&legislationTypeId=1&docTypeId=2&legislationName=SB69)
+
+> Section 1.  Sections 1, 2, 5, 6, 7, 11 and 36 of this Act amend Sections 151(f), 202(a), 219(a), 219(c), 224, 232(c) and 364 of Title 8, respectively.  *Amendments to Sections 219, 224 and 232 and related provisions are intended to provide specific statutory authority for Delaware corporations to use networks of electronic databases (examples of which are described currently as “distributed ledgers” or a “blockchain”) for the creation and maintenance of corporate records, including the corporation’s stock ledger.* Section 219(c), as amended, now includes a definition of “stock ledger.” Section 224, as amended, requires that the stock ledger serve three functions contemplated by the Delaware General Corporation Law: it must enable the corporation to prepare the list of stockholders specified in Sections 219 and 220; it must record the information specified in Sections 156, 159, 217(a) and 218; and, as required by Section 159, it must record transfers of stock as governed by Article 8 of subtitle I of Title 6. Sections 151, 202 and 364 are also amended to clarify that the notices given to holders of uncertificated shares pursuant to those sections may be given by electronic transmission.
+
+_Emphasis added_
+
+### Requirements
+
+The token will allow for the creation and maintenance of corporate records, and as such has the following high-level requirements.
 
 1. It must function as a `Corporations Stock ledger`.
 
@@ -67,6 +77,75 @@ See also [ERC721 — Non-Fungable Token Standard](https://github.com/ethereum/ei
 * https://www.nyse.com/regulation-a
 * https://www.sec.gov/files/Knyazeva_RegulationA%20.pdf
 * https://www.sec.gov/info/smallbus/secg/regulation-a-amendments-secg.shtml
+* https://legis.delaware.gov/json/BillDetail/GenerateHtmlDocument?legislationId=25730&legislationTypeId=1&docTypeId=2&legislationName=SB69
+
+## Crowdsale Details
+
+### Terms required by the SEC
+
+1. Terms (As defined by the SEC):
+
+    - Price per share
+
+        Priced in USD with a fixed ETH to USD conversion rate determined by the company at the start of the crowdsale.
+
+    - Nature of securities
+
+        Equity
+
+    - Closing date
+
+        See Crowdsale Parameters below.
+
+    - Amount of securities offered
+
+        See Crowdsale Parameters below.
+
+2. Implied Terms
+
+    - Statement as to the number of days left in the campaign
+
+        To be displayed on the Crowdsale web page, calculated based on current date vs crowdsale end date.
+
+    - Offering goal in dollars
+
+        To be displayed on the Crowdsale web page, calculated based on crowdsale cap and conversion rate.
+
+3. Non-Terms
+    - Minimum investment
+
+        Both to be displayed on the Crowdsale web page, as defined in the crowdsale contract in terms of minimum number of Tokens purchasable.
+
+    - Date when minimum is reached
+
+        To be displayed on the Crowdsale web page, based on data from the Crowdsale contract.
+
+    - Number of investors
+
+        To be displayed on the Crowdsale web page, based on data from the Token contract.
+
+    - Amount raised
+
+        To be displayed on the Crowdsale web page, based on data from the Token and Crowdsale contracts.
+        The Token contract will know the number of tokens issued `totalSupply()` and the crowdsale will know the USD to ETH conversion price.  When a Token is minted an event must be emitted that records the USD to ETH conversion price at the time of minting.
+
+    - The words “Closing Soon”
+
+        Will be displayed on the crowdsale website 7 days prior to closing.
+
+### Crowdsale Parameters
+
+* Maximum of 7,500 participants.
+* Overall cap is USD $2.5M (or equivalent)
+* This will represent 10% equity overall
+* There will not be any phases, discount structures for early / pre-commitments etc. It will only be the Reg A+ Equity Crowdsale for CO2KN. Everything will be a constant for the duration of the sale.
+* The conversion rate between ETH and tokens will be a fixed rate decided by the company closer to the time of sale.
+* The token's name is `CO2KN, INC Shares (indivisible)`
+* The token's symbol is `CTKN`
+* Crowdsale period
+
+    * start date `2018-05-01`
+    * end date `2018-05-30`
 
 ## Development
 
