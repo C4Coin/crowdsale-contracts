@@ -7,7 +7,7 @@ Smart contracts for C4Coin's forthcoming crowdsale
 
 ## Overview
 
-It is proposed that C4Coin will launch a [Regulation A+](https://en.wikipedia.org/wiki/Regulation_A#Regulation_A+) compatible token, where each issued token corresponds to a unit of stock in the company.
+It is proposed that C4Coin will launch a [Regulation A+](https://en.wikipedia.org/wiki/Regulation_A#Regulation_A+) compliant token, where each issued token corresponds to a unit of stock in the company.
 
 ### Covering Legislation
 
@@ -133,19 +133,25 @@ See also [ERC721 — Non-Fungable Token Standard](https://github.com/ethereum/ei
 
         Will be displayed on the crowdsale website 7 days prior to closing.
 
-### Crowdsale Parameters
+### Crowdsale
 
-* Maximum of 7,500 participants.
-* Overall cap is USD $2.5M (or equivalent)
-* This will represent 10% equity overall
-* There will not be any phases, discount structures for early / pre-commitments etc. It will only be the Reg A+ Equity Crowdsale for CO2KN. Everything will be a constant for the duration of the sale.
-* The conversion rate between ETH and tokens will be a fixed rate decided by the company closer to the time of sale.
+* Everything will be a constant for the duration of the sale.
+* There will not be any phases, discount structures for early / pre-commitments etc.
 * The token's name is `CO2KN, INC Shares (indivisible)`
 * The token's symbol is `CTKN`
 * Crowdsale period
 
     * start date `2018-05-01`
     * end date `2018-05-30`
+
+  * No maximum individual cap
+  * Minimum participation is 1 token.
+
+#### Other Parameters to be completed.
+
+* Maximum number of participants.
+* Overall cap (in tokens, shares to be available via Tier 1 Regulation A+ fundraise)
+* The conversion rate between ETH and tokens (will be a fixed rate decided by the company closer to the time of sale.)
 
 ## Development
 
