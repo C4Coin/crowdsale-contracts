@@ -51,6 +51,10 @@
 * The total number of shares outstanding is the difference between a cap and `token.totalSupply()` and is rightly a function of the `CrowdsaleContract`.
 * The date the share was purchased is a property of the block the purchase was processed in so there is no need to store it in the token. However the user database might wish to record that information as well for convenience.
 * The price the user paid is a function of the ETH price per Token (which can change during the crowdsale) and ETH price at that point (which can also be set in the `CrowdsaleContract`) and the number of ETH spent, which the `CrowdsaleContract` also knows and which is returned in the transaction receipt.
+* Tokens can only be minted in whole numbers so `floor` the conversion and put the remainder, less some gas, into a `RefundVault`.
+* Move the ETH to be turned into Tokens into the Crowdsale's `wallet`.
+* Move the remainder into a `RefundVault` called `refundWallet`.
+* People with refunds can claim their refunds through the Crowdsale Website.
 * The class of shares will be a fixed `bytes32` constant defined when the Token contract is deployed. It needs to be a parameter of the Token's constructor.
 * Why the shares were transferred is going to either be 'minting' or 'purchase'.  The Token can emit either a `Minted` or `Purchased` event in addition to the usual `Transfer` events defined by the `ERC20` standard.
 * With regard to the share number, the Token contract will maintain a `mapping(address => uint[]) private shareNumbers`. When minting first happens the shareNumbers array for that address will be populated based on `totalSupply + n` for each `n` from `0` to the number of tokens minted - 1.
