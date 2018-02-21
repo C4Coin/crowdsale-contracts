@@ -40,14 +40,9 @@ jobs:
           command: npm run lint:js
 
       - run:
-          name: Tests without any coverage
-          command: npm test
+          name: Unit tests with code coverage
+          command: npm run test:cov
 
-      # TODO: Enable code coverage when we have code to properly test.
-      # - run:
-      #     name: Unit tests with code coverage
-      #     command: npm run test:cov
-      #
-      # - run:
-      #     name: Send reports to codecov.io
-      #     command: codecov
+      - run:
+          name: Send reports to codecov.io
+          command: codecov
