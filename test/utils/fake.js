@@ -1,12 +1,14 @@
-const ether = require('../utils/ether')
+const ether = require('./ether')
 
 const SECONDS_IN_A_DAY = 60 * 60 * 24
 const BigNumber = web3.BigNumber
 
+const fakeOpeningTime = (offset = 0) =>
+  Math.floor(new Date().getTime() / 1000) + offset
+
 const crowdsaleData = ({ wallet, token, ...fields }) => {
   // const tokenSupply = new BigNumber('1e22')
-  const openingTime =
-    fields.openingTime || Math.floor(new Date().getTime() / 1000)
+  const openingTime = fields.openingTime || fakeOpeningTime()
   const closingTime = openingTime + SECONDS_IN_A_DAY
   // Usually this represents how many tokens 1 wei buys?
   // instead we need the rate to represent how many wei one token costs.
@@ -18,14 +20,18 @@ const crowdsaleData = ({ wallet, token, ...fields }) => {
   // usually the goal is represented in wei but we need it to be in USD.
   const goal = ether(50)
 
+  // just set a default dollar rate of half an ETH
+  const dollarRate = ether(0.5)
+
   const data = {
     openingTime,
     closingTime,
     rate,
-    wallet,
+    dollarRate,
     cap,
-    token,
     goal,
+    wallet,
+    token,
     ...fields
   }
 
@@ -33,10 +39,11 @@ const crowdsaleData = ({ wallet, token, ...fields }) => {
     data.openingTime,
     data.closingTime,
     data.rate,
-    data.wallet,
+    data.dollarRate,
     data.cap,
-    data.token,
-    data.goal
+    data.goal,
+    data.wallet,
+    data.token
   ]
 }
 
@@ -55,6 +62,7 @@ const makeCrowdsale = async (
 }
 
 module.exports = {
+  fakeOpeningTime,
   crowdsaleData,
   makeCrowdsale
 }

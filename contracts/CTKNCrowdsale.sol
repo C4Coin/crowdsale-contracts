@@ -11,14 +11,19 @@ import 'zeppelin-solidity/contracts/token/ERC20/MintableToken.sol';
 contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale {
     using SafeMath for uint256;
 
+    uint256 public dollarRate;
+
+    event DollarRateSet(uint256 dollarRate);
+
     function CTKNCrowdsale(
         uint256 _openingTime,
         uint256 _closingTime,
         uint256 _rate,
-        address _wallet,
+        uint256 _dollarRate,
         uint256 _cap,
-        MintableToken _token,
-        uint256 _goal
+        uint256 _goal,
+        address _wallet,
+        MintableToken _token
     )
         public
         Crowdsale(_rate, _wallet, _token)
@@ -27,5 +32,16 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
         RefundableCrowdsale(_goal)
     {
         require(_goal <= _cap);
+        require(_dollarRate != 0);
+        dollarRate = _dollarRate;
+    }
+
+    function setDollarRate(uint256 _dollarRate)
+        public
+        onlyOwner
+    {
+        require(_dollarRate != 0);
+        dollarRate = _dollarRate;
+        DollarRateSet(dollarRate);
     }
 }
