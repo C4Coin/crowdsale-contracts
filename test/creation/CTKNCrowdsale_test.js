@@ -4,9 +4,7 @@ const MockCTKN = artifacts.require('./mocks/MockCTKN.sol')
 const assertThrows = require('../utils/assertThrows')
 const { fakeOpeningTime, makeCrowdsale } = require('../utils/fake')
 
-// const BigNumber = web3.BigNumber
-
-contract('CTKNCrowdsale', ([owner, wallet, refundWallet]) => {
+contract('CTKNCrowdsale creation', ([owner, wallet]) => {
   let crowdsale
   let token
   // let tx
@@ -20,15 +18,6 @@ contract('CTKNCrowdsale', ([owner, wallet, refundWallet]) => {
       assert.equal(await token.owner(), owner, `expected ${owner}`)
     })
   })
-
-  // openingTime,
-  // closingTime,
-  // rate,
-  // dollarRate,
-  // cap,
-  // goal
-  // wallet,
-  // token
 
   context('Crowdsale given bad data', () => {
     it('throws if given openingTime of 0', () =>
