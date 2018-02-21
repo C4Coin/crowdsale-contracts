@@ -2,8 +2,8 @@
 
 Smart contracts for C4Coin's forthcoming crowdsale
 
-* `develop` — [![CircleCI](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/develop.svg?style=svg)](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/develop)
-* `master` — [![CircleCI](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/master.svg?style=svg)](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/master)
+* `develop` — [![CircleCI](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/develop.svg?style=svg)](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/develop) [![codecov](https://codecov.io/gh/C4Coin/crowdsale-contracts/branch/develop/graph/badge.svg)](https://codecov.io/gh/C4Coin/crowdsale-contracts)
+* `master` — [![CircleCI](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/master.svg?style=svg)](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/master) [![codecov](https://codecov.io/gh/C4Coin/crowdsale-contracts/branch/master/graph/badge.svg)](https://codecov.io/gh/C4Coin/crowdsale-contracts)
 
 ## Overview
 
