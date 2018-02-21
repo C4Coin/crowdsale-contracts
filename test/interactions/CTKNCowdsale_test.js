@@ -13,7 +13,7 @@ contract(
   ([owner, wallet, refundWallet]) => {
     let crowdsale
     let token
-    // let tx
+    let tx
 
     before(async () => {
       token = await MockCTKN.new()

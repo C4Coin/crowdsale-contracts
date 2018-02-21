@@ -2,18 +2,13 @@ const CTKNCrowdsale = artifacts.require('./CTKNCrowdsale.sol')
 const MockCTKN = artifacts.require('./mocks/MockCTKN.sol')
 
 const assertThrows = require('../utils/assertThrows')
-const {
-  crowdsaleData,
-  fakeOpeningTime,
-  makeCrowdsale
-} = require('../utils/fake')
+const { fakeOpeningTime, makeCrowdsale } = require('../utils/fake')
 
 // const BigNumber = web3.BigNumber
 
 contract('CTKNCrowdsale', ([owner, wallet, refundWallet]) => {
   let crowdsale
   let token
-  let data
   // let tx
 
   before(async () => {
