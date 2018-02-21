@@ -1,43 +1,75 @@
 const CTKNCrowdsale = artifacts.require('./CTKNCrowdsale.sol')
 const MockCTKN = artifacts.require('./mocks/MockCTKN.sol')
 
-// const assertThrows = require('../utils/assertThrows')
-// const { getLog } = require('../utils/txHelpers')
-const ether = require('../utils/ether')
+const assertThrows = require('../utils/assertThrows')
+const { makeCrowdsale } = require('../utils/fake')
 
-const BigNumber = web3.BigNumber
+// const BigNumber = web3.BigNumber
 
 contract('CTKNCrowdsale', ([owner, wallet, refundWallet]) => {
   let crowdsale
   let token
   // let tx
 
-  const SECONDS_IN_A_DAY = 60 * 60 * 24
-  // const tokenSupply = new BigNumber('1e22')
-  const openingTime = Math.floor(new Date().getTime() / 1000)
-  const closingTime = openingTime + SECONDS_IN_A_DAY
-  const rate = new BigNumber(1)
-  const cap = ether(100)
-  const goal = ether(50)
-
   before(async () => {
     token = await MockCTKN.new()
-    crowdsale = await CTKNCrowdsale.new(
-      openingTime,
-      closingTime,
-      rate,
-      wallet,
-      cap,
-      token.address,
-      goal
-    )
   })
 
-  it('token has owner', async () => {
-    assert.equal(await token.owner(), owner, `expected ${owner}`)
+  context('ownership', () => {
+    it('token has the correct owner', async () => {
+      assert.equal(await token.owner(), owner, `expected ${owner}`)
+    })
   })
 
-  it('crowdsale has owner', async () => {
-    assert.equal(await crowdsale.owner(), owner, `expected ${owner}`)
+  // openingTime,
+  // closingTime,
+  // rate,
+  // wallet,
+  // cap,
+  // token,
+  // goal,
+
+  context('Crowdsale given bad data', () => {
+    it('throws if given openingTime of 0', () =>
+      assertThrows(
+        makeCrowdsale(CTKNCrowdsale, { wallet, token, openingTime: 0 })
+      ))
+
+    it('throws if given openingTime in the past', () =>
+      assertThrows(
+        makeCrowdsale(CTKNCrowdsale, { wallet, token, openingTime: 1000 })
+      ))
+
+    it('throws if given rate of 0', () =>
+      assertThrows(makeCrowdsale(CTKNCrowdsale, { wallet, token, rate: 0 })))
+
+    it('throws if given zero wallet address', () =>
+      assertThrows(makeCrowdsale(CTKNCrowdsale, { wallet: 0x0, token })))
+
+    it('throws if given cap of 0', () =>
+      assertThrows(makeCrowdsale(CTKNCrowdsale, { wallet, token, cap: 0 })))
+
+    it('throws if given zero token address', () =>
+      assertThrows(makeCrowdsale(CTKNCrowdsale, { wallet, token: 0x0 })))
+
+    it('throws if given goal of 0', () =>
+      assertThrows(makeCrowdsale(CTKNCrowdsale, { wallet, token, goal: 0 })))
+
+    it("throws if given goal that's greater than the cap", () =>
+      assertThrows(
+        makeCrowdsale(CTKNCrowdsale, { wallet, token, cap: 5, goal: 10 })
+      ))
+  })
+
+  context('Crowdsale given good data', () => {
+    before(async () => {
+      crowdsale = await makeCrowdsale(CTKNCrowdsale, { wallet, token })
+    })
+
+    context('ownership', () => {
+      it('crowdsale has the correct owner', async () => {
+        assert.equal(await crowdsale.owner(), owner, `expected ${owner}`)
+      })
+    })
   })
 })
