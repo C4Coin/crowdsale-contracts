@@ -12,6 +12,9 @@ pids
 # Coverage directory used by tools like istanbul
 coverage
 coverage.json
+coverageEnv
+scTopics
+allFiredEvents
 
 # nyc test coverage
 .nyc_output

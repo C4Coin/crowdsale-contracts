@@ -1,3 +1,8 @@
-const ether = n => new web3.BigNumber(web3.toWei(n, 'ether'))
+const convert = (n, conversion) => new web3.BigNumber(conversion(n, 'ether'))
+const toWei = n => convert(n, web3.toWei)
+const fromWei = n => convert(n, web3.fromWei)
 
-module.exports = ether
+module.exports = {
+  toWei,
+  fromWei
+}

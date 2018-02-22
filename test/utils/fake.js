@@ -1,4 +1,4 @@
-const ether = require('./ether')
+const { toWei } = require('./ether')
 
 const SECONDS_IN_A_DAY = 60 * 60 * 24
 const BigNumber = web3.BigNumber
@@ -15,13 +15,13 @@ const crowdsaleData = ({ wallet, token, ...fields }) => {
   const rate = new BigNumber(1)
 
   // usually this cap is represented in wei but we need it to be in USD.
-  const cap = ether(100)
+  const cap = toWei(100)
 
   // usually the goal is represented in wei but we need it to be in USD.
-  const goal = ether(50)
+  const goal = toWei(50)
 
   // just set a default dollar rate of half an ETH
-  const dollarRate = ether(0.5)
+  const dollarRate = toWei(0.5)
 
   const data = {
     openingTime,
