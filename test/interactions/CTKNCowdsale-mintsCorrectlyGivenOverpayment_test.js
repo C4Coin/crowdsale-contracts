@@ -4,7 +4,7 @@ const MockCTKN = artifacts.require('./mocks/MockCTKN.sol')
 const { makeCrowdsale } = require('../utils/fake')
 const { toWei } = require('../utils/ether')
 
-contract('CTKNCrowdsale minting', accounts => {
+contract('CTKNCrowdsale minting given overpayment', accounts => {
   const [wallet, refundWallet, punter] = accounts.slice(1)
 
   let crowdsale
@@ -25,11 +25,12 @@ contract('CTKNCrowdsale minting', accounts => {
     await token.transferOwnership(crowdsale.address)
   })
 
-  context('exact payment', () => {
-    // pay 1 ETH
-    const amount = toWei(1)
-    // expect 2 tokens.
+  context('overpayment', () => {
+    // pay 1.2 ETH
+    const amount = toWei(1.2)
+    // still expect 2 tokens.
     const expected = 2
+    const expectedRefund = toWei(0.2).toNumber()
 
     let balance
     let refundBalance
@@ -45,9 +46,9 @@ contract('CTKNCrowdsale minting', accounts => {
       assert.equal(balance.toNumber(), expected)
     })
 
-    // also expect the 0 wei to be set aside for refund.
+    // also expect the remaining 0.2 ETH to be set aside for refund.
     it('has no refundable amount for the punter', async () => {
-      assert.equal(refundBalance.toNumber(), 0)
+      assert.equal(refundBalance.toNumber(), expectedRefund)
     })
   })
 })

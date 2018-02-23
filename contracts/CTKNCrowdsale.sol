@@ -13,6 +13,9 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
 
     uint256 public dollarRate;
 
+    // use this for overpayments, separate from the refunds in RefundableCrowdsale
+    RefundVault private refundWallet;
+
     event DollarRateSet(uint256 dollarRate);
 
     function CTKNCrowdsale(
@@ -23,6 +26,7 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
         uint256 _cap,
         uint256 _goal,
         address _wallet,
+        address _refundWallet,
         MintableToken _token
     )
         public
@@ -33,6 +37,7 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
     {
         require(_goal <= _cap);
         require(_dollarRate != 0);
+        refundWallet = new RefundVault(_refundWallet);
         dollarRate = _dollarRate;
     }
 
@@ -44,4 +49,68 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
         dollarRate = _dollarRate;
         DollarRateSet(dollarRate);
     }
+
+    /**
+     *  @param addr The address to check for a refund balance
+     */
+    function refundBalance(address addr) external view returns (uint256) {
+        return refundWallet.deposited(addr);
+    }
+
+    /**
+     * Investors can claim refunds. This overrides `RefundableCrowdsale` `claimRefund`
+     * 1. if crowdsale is unsuccessful refunds the amount they spent on tokens
+     * 2. it will also refund the additional amount they deposited over what was spent on tokens.
+     */
+    function claimRefund() public {
+        require(isFinalized);
+        if (!goalReached() && vault.deposited(msg.sender) != 0) {
+            vault.refund(msg.sender);
+        }
+        if (refundWallet.deposited(msg.sender) != 0) {
+            refundWallet.refund(msg.sender);
+        }
+    }
+
+    /**
+     *  Overrides `RefundableCrowdsale` finalization task,
+     *  called when owner calls `finalize()`
+     *  simply enables refunds on the refund vault then invokes `super.finalization()`
+     */
+    function finalization() internal {
+        refundWallet.enableRefunds();
+        super.finalization();
+    }
+
+    /**
+     * Overrides `RefundableCrowdsale` fund forwarding.
+     * sends the correct funds to both the vault, and the refundWallet.
+     */
+    function _forwardFunds() internal {
+        uint256 depositValue = _getTokenAmount(msg.value);
+        uint256 refundValue = _getRefundAmount(msg.value);
+        vault.deposit.value(depositValue)(msg.sender);
+        refundWallet.deposit.value(refundValue)(msg.sender);
+    }
+
+    /**
+     *  In this contract the `rate` represents the number of wei needed to buy one token.
+     *  Therefore this function returns te floor of `_weiAmount` / `rate`
+     *  @param _weiAmount Value in wei to be converted into tokens
+     *  @return Number of tokens that can be purchased with the specified _weiAmount
+     */
+    function _getTokenAmount(uint256 _weiAmount) internal view returns (uint256) {
+      return uint256(_weiAmount / rate);
+    }
+
+    /**
+     *  We can only issue whole numbers of tokens, so any additional wei.
+     *  needs to be refundable once the crowdsale has closed.
+     *  @param _weiAmount Value in wei to be converted into tokens
+     *  @return Number of tokens that can be purchased with the specified _weiAmount
+     */
+    function _getRefundAmount(uint256 _weiAmount) internal view returns (uint256) {
+      return _weiAmount % rate;
+    }
+
 }
