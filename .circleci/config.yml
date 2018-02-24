@@ -7,7 +7,8 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:9.6.1
+      # update this to 9.6.1 when CCI supports it.
+      - image: circleci/node:9.5.0
 
     steps:
       - checkout
