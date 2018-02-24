@@ -8,7 +8,7 @@
     "contracts": "contracts"
   },
   "engines": {
-    "node": "9.5.0",
+    "node": "9.6.1",
     "npm": "5.6.0"
   },
   "devDependencies": {
@@ -45,7 +45,7 @@
     "type": "git",
     "url": "git+git@github.com:C4Coin/crowdsale-contracts.git.git"
   },
-  "keywords": ["identity"],
+  "keywords": ["crowdsale"],
   "author": "Dave Sag <davesag@gmail.com>",
   "contributors": [],
   "license": "MIT",
