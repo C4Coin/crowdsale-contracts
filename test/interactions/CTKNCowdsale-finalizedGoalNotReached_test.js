@@ -1,4 +1,6 @@
-const CTKNCrowdsale = artifacts.require('./mocks/MockCTKNCrowdsaleWithMutableDates.sol')
+const CTKNCrowdsale = artifacts.require(
+  './mocks/MockCTKNCrowdsaleWithMutableDates.sol'
+)
 const MockCTKN = artifacts.require('./mocks/MockCTKN.sol')
 
 const { SECONDS_IN_A_DAY, makeCrowdsale } = require('../utils/fake')
