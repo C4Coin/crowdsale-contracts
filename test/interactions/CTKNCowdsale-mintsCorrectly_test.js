@@ -5,7 +5,7 @@ const { makeCrowdsale } = require('../utils/fake')
 const { toWei } = require('../utils/ether')
 
 contract('CTKNCrowdsale minting', accounts => {
-  const [wallet, refundWallet, punter] = accounts.slice(1)
+  const [wallet, overpaymentWallet, punter] = accounts.slice(1)
 
   let crowdsale
   let token
@@ -18,7 +18,7 @@ contract('CTKNCrowdsale minting', accounts => {
     token = await MockCTKN.new()
     crowdsale = await makeCrowdsale(CTKNCrowdsale, {
       wallet,
-      refundWallet,
+      overpaymentWallet,
       token,
       rate
     })

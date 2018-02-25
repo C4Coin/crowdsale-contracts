@@ -14,7 +14,7 @@ contract MockCTKNCrowdsaleWithMutableDates is CTKNCrowdsale {
         uint256 _cap,
         uint256 _goal,
         address _wallet,
-        address _refundWallet,
+        address _overpaymentWallet,
         MintableToken _token
     )
         public
@@ -26,7 +26,7 @@ contract MockCTKNCrowdsaleWithMutableDates is CTKNCrowdsale {
             _cap,
             _goal,
             _wallet,
-            _refundWallet,
+            _overpaymentWallet,
             _token
         )
     {

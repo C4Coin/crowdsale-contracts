@@ -4,7 +4,7 @@ const MockCTKN = artifacts.require('./mocks/MockCTKN.sol')
 const assertThrows = require('../utils/assertThrows')
 const { fakeOpeningTime, makeCrowdsale } = require('../utils/fake')
 
-contract('CTKNCrowdsale creation', ([owner, wallet, refundWallet]) => {
+contract('CTKNCrowdsale creation', ([owner, wallet, overpaymentWallet]) => {
   let crowdsale
   let token
   // let tx
@@ -24,7 +24,7 @@ contract('CTKNCrowdsale creation', ([owner, wallet, refundWallet]) => {
       assertThrows(
         makeCrowdsale(CTKNCrowdsale, {
           wallet,
-          refundWallet,
+          overpaymentWallet,
           token,
           openingTime: 0
         })
@@ -34,7 +34,7 @@ contract('CTKNCrowdsale creation', ([owner, wallet, refundWallet]) => {
       assertThrows(
         makeCrowdsale(CTKNCrowdsale, {
           wallet,
-          refundWallet,
+          overpaymentWallet,
           token,
           openingTime: 1000
         })
@@ -54,14 +54,19 @@ contract('CTKNCrowdsale creation', ([owner, wallet, refundWallet]) => {
 
     it('throws if given rate of 0', () =>
       assertThrows(
-        makeCrowdsale(CTKNCrowdsale, { wallet, refundWallet, token, rate: 0 })
+        makeCrowdsale(CTKNCrowdsale, {
+          wallet,
+          overpaymentWallet,
+          token,
+          rate: 0
+        })
       ))
 
     it('throws if given dollarRate of 0', () =>
       assertThrows(
         makeCrowdsale(CTKNCrowdsale, {
           wallet,
-          refundWallet,
+          overpaymentWallet,
           token,
           dollarRate: 0
         })
@@ -69,19 +74,29 @@ contract('CTKNCrowdsale creation', ([owner, wallet, refundWallet]) => {
 
     it('throws if given cap of 0', () =>
       assertThrows(
-        makeCrowdsale(CTKNCrowdsale, { wallet, refundWallet, token, cap: 0 })
+        makeCrowdsale(CTKNCrowdsale, {
+          wallet,
+          overpaymentWallet,
+          token,
+          cap: 0
+        })
       ))
 
     it('throws if given goal of 0', () =>
       assertThrows(
-        makeCrowdsale(CTKNCrowdsale, { wallet, refundWallet, token, goal: 0 })
+        makeCrowdsale(CTKNCrowdsale, {
+          wallet,
+          overpaymentWallet,
+          token,
+          goal: 0
+        })
       ))
 
     it("throws if given goal that's greater than the cap", () =>
       assertThrows(
         makeCrowdsale(CTKNCrowdsale, {
           wallet,
-          refundWallet,
+          overpaymentWallet,
           token,
           cap: 5,
           goal: 10
@@ -90,17 +105,17 @@ contract('CTKNCrowdsale creation', ([owner, wallet, refundWallet]) => {
 
     it('throws if given zero wallet address', () =>
       assertThrows(
-        makeCrowdsale(CTKNCrowdsale, { wallet: 0x0, refundWallet, token })
+        makeCrowdsale(CTKNCrowdsale, { wallet: 0x0, overpaymentWallet, token })
       ))
 
-    it('throws if given zero refundWallet address', () =>
+    it('throws if given zero overpaymentWallet address', () =>
       assertThrows(
-        makeCrowdsale(CTKNCrowdsale, { wallet, refundWallet: 0x0, token })
+        makeCrowdsale(CTKNCrowdsale, { wallet, overpaymentWallet: 0x0, token })
       ))
 
     it('throws if given zero token address', () =>
       assertThrows(
-        makeCrowdsale(CTKNCrowdsale, { wallet, refundWallet, token: 0x0 })
+        makeCrowdsale(CTKNCrowdsale, { wallet, overpaymentWallet, token: 0x0 })
       ))
   })
 
@@ -108,7 +123,7 @@ contract('CTKNCrowdsale creation', ([owner, wallet, refundWallet]) => {
     before(async () => {
       crowdsale = await makeCrowdsale(CTKNCrowdsale, {
         wallet,
-        refundWallet,
+        overpaymentWallet,
         token
       })
     })

@@ -6,7 +6,7 @@ const BigNumber = web3.BigNumber
 const fakeOpeningTime = (offset = 0) =>
   Math.floor(new Date().getTime() / 1000) + offset
 
-const crowdsaleData = ({ wallet, refundWallet, token, ...fields }) => {
+const crowdsaleData = ({ wallet, overpaymentWallet, token, ...fields }) => {
   // const tokenSupply = new BigNumber('1e22')
   const openingTime = fields.openingTime || fakeOpeningTime()
   const closingTime = openingTime + SECONDS_IN_A_DAY
@@ -31,7 +31,7 @@ const crowdsaleData = ({ wallet, refundWallet, token, ...fields }) => {
     cap,
     goal,
     wallet,
-    refundWallet,
+    overpaymentWallet,
     token,
     ...fields
   }
@@ -44,21 +44,21 @@ const crowdsaleData = ({ wallet, refundWallet, token, ...fields }) => {
     data.cap,
     data.goal,
     data.wallet,
-    data.refundWallet,
+    data.overpaymentWallet,
     data.token
   ]
 }
 
 const makeCrowdsale = async (
   Crowdsale,
-  { wallet, refundWallet, token: tokenOrTokenAddress, ...fields }
+  { wallet, overpaymentWallet, token: tokenOrTokenAddress, ...fields }
 ) => {
   const token =
     tokenOrTokenAddress.address !== undefined
       ? tokenOrTokenAddress.address
       : tokenOrTokenAddress
   const crowdsale = await Crowdsale.new(
-    ...crowdsaleData({ wallet, refundWallet, token, ...fields })
+    ...crowdsaleData({ wallet, overpaymentWallet, token, ...fields })
   )
   return crowdsale
 }

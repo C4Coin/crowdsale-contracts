@@ -53,7 +53,7 @@
 * The price the user paid is a function of the ETH price per Token (which can change during the crowdsale) and ETH price at that point (which can also be set in the `CrowdsaleContract`) and the number of ETH spent, which the `CrowdsaleContract` also knows and which is returned in the transaction receipt.
 * Tokens can only be minted in whole numbers so `floor` the conversion and put the remainder, less some gas, into a `RefundVault`.
 * Move the ETH to be turned into Tokens into the Crowdsale's `wallet`.
-* Move the remainder into a `RefundVault` called `refundWallet`.
+* Move the remainder into a `RefundVault` called `overpaymentWallet`.
 * People with refunds can claim their refunds through the Crowdsale Website.
 * The class of shares will be a fixed `bytes32` constant defined when the Token contract is deployed. It needs to be a parameter of the Token's constructor.
 * Why the shares were transferred is going to either be 'minting' or 'purchase'.  The Token can emit either a `Minted` or `Purchased` event in addition to the usual `Transfer` events defined by the `ERC20` standard.

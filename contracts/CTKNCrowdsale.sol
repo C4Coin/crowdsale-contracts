@@ -14,7 +14,7 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
     uint256 public dollarRate;
 
     // use this for overpayments, separate from the refunds in RefundableCrowdsale
-    RefundVault private refundWallet;
+    RefundVault private overpaymentWallet;
 
     event DollarRateSet(uint256 dollarRate);
 
@@ -26,7 +26,7 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
         uint256 _cap,
         uint256 _goal,
         address _wallet,
-        address _refundWallet,
+        address _overpaymentWallet,
         MintableToken _token
     )
         public
@@ -37,7 +37,7 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
     {
         require(_goal <= _cap);
         require(_dollarRate != 0);
-        refundWallet = new RefundVault(_refundWallet);
+        overpaymentWallet = new RefundVault(_overpaymentWallet);
         dollarRate = _dollarRate;
     }
 
@@ -54,7 +54,7 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
      *  @param addr The address to check for a refund balance
      */
     function refundBalance(address addr) external view returns (uint256) {
-        return refundWallet.deposited(addr);
+        return overpaymentWallet.deposited(addr);
     }
 
     /**
@@ -67,8 +67,8 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
         if (!goalReached() && vault.deposited(msg.sender) != 0) {
             vault.refund(msg.sender);
         }
-        if (refundWallet.deposited(msg.sender) != 0) {
-            refundWallet.refund(msg.sender);
+        if (overpaymentWallet.deposited(msg.sender) != 0) {
+            overpaymentWallet.refund(msg.sender);
         }
     }
 
@@ -78,19 +78,19 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
      *  simply enables refunds on the refund vault then invokes `super.finalization()`
      */
     function finalization() internal {
-        refundWallet.enableRefunds();
+        overpaymentWallet.enableRefunds();
         super.finalization();
     }
 
     /**
      * Overrides `RefundableCrowdsale` fund forwarding.
-     * sends the correct funds to both the vault, and the refundWallet.
+     * sends the correct funds to both the vault, and the overpaymentWallet.
      */
     function _forwardFunds() internal {
         uint256 depositValue = _getTokenAmount(msg.value).mul(rate);
         uint256 refundValue = _getRefundAmount(msg.value);
         vault.deposit.value(depositValue)(msg.sender);
-        refundWallet.deposit.value(refundValue)(msg.sender);
+        overpaymentWallet.deposit.value(refundValue)(msg.sender);
     }
 
     /**

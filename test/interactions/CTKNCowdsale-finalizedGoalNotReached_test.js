@@ -8,7 +8,7 @@ const { toWei } = require('../utils/ether')
 const assertThrows = require('../utils/assertThrows')
 
 contract('CTKNCrowdsale investor can claim refunds', accounts => {
-  const [wallet, refundWallet, punter] = accounts.slice(1)
+  const [wallet, overpaymentWallet, punter] = accounts.slice(1)
 
   let crowdsale
   let token
@@ -27,7 +27,7 @@ contract('CTKNCrowdsale investor can claim refunds', accounts => {
     token = await MockCTKN.new()
     crowdsale = await makeCrowdsale(CTKNCrowdsale, {
       wallet,
-      refundWallet,
+      overpaymentWallet,
       token,
       rate,
       goal
