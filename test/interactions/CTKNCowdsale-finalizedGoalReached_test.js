@@ -5,9 +5,6 @@ const MockCTKN = artifacts.require('./mocks/MockCTKN.sol')
 
 const { SECONDS_IN_A_DAY, makeCrowdsale } = require('../utils/fake')
 const { toWei } = require('../utils/ether')
-const assertThrows = require('../utils/assertThrows')
-// const timeTravel = require('../utils/timeTravel')
-const { getLog } = require('../utils/txHelpers')
 
 contract(
   'CTKNCrowdsale investor can claim refunds (goal reached)',
@@ -50,8 +47,21 @@ contract(
       refunded = newBalance.minus(balance)
     })
 
-    it('calling claimRefund only refunds the overpayment, less some gas', () => {
+    it('calling claimRefund only refunds the overpayment', () => {
       assert.isTrue(refunded.lt(expectedMax)) // the gas amount can vary slightly.
+    })
+
+    context('anotherPunter who has not bought any tokens', () => {
+      before(async () => {
+        const balance = web3.eth.getBalance(anotherPunter)
+        await crowdsale.claimRefund({ from: anotherPunter })
+        const newBalance = web3.eth.getBalance(anotherPunter)
+        refunded = newBalance.minus(balance)
+      })
+
+      it('calling claimRefund refunds nothing', () => {
+        assert.isTrue(refunded.lt(0)) // the gas amount can vary slightly.
+      })
     })
   }
 )

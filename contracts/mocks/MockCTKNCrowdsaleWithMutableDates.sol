@@ -38,12 +38,7 @@ contract MockCTKNCrowdsaleWithMutableDates is CTKNCrowdsale {
      *  @param secs The number of seconds to wind back the `openingTime` and `closingTime`.
      */
     function turnBackTime(uint256 secs) external {
-        uint256 cTime = closingTime;
         openingTime -= secs;
         closingTime -= secs;
-    }
-
-    function getNow() external view returns (uint256) {
-        return now;
     }
 }

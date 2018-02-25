@@ -4,12 +4,11 @@ const CTKNCrowdsale = artifacts.require(
 const MockCTKN = artifacts.require('./mocks/MockCTKN.sol')
 
 const { SECONDS_IN_A_DAY, makeCrowdsale } = require('../utils/fake')
-const { toWei, fromWei } = require('../utils/ether')
+const { toWei } = require('../utils/ether')
 const assertThrows = require('../utils/assertThrows')
-const { getLog } = require('../utils/txHelpers')
 
 contract('CTKNCrowdsale investor can claim refunds', accounts => {
-  const [wallet, refundWallet, punter, anotherPunter] = accounts.slice(1)
+  const [wallet, refundWallet, punter] = accounts.slice(1)
 
   let crowdsale
   let token
@@ -44,7 +43,7 @@ contract('CTKNCrowdsale investor can claim refunds', accounts => {
 
     context('now turn back time', () => {
       before(async () => {
-        tx = await crowdsale.turnBackTime(SECONDS_IN_A_DAY * 2)
+        await crowdsale.turnBackTime(SECONDS_IN_A_DAY * 2)
       })
 
       it('hasClosed', async () => {
@@ -69,7 +68,7 @@ contract('CTKNCrowdsale investor can claim refunds', accounts => {
 
           before(async () => {
             balance = web3.eth.getBalance(punter)
-            tx = await crowdsale.claimRefund({ from: punter })
+            await crowdsale.claimRefund({ from: punter })
             const newBalance = web3.eth.getBalance(punter)
             refunded = newBalance.minus(balance)
           })
