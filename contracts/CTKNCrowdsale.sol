@@ -87,7 +87,7 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
      * sends the correct funds to both the vault, and the refundWallet.
      */
     function _forwardFunds() internal {
-        uint256 depositValue = _getTokenAmount(msg.value);
+        uint256 depositValue = _getTokenAmount(msg.value).mul(rate);
         uint256 refundValue = _getRefundAmount(msg.value);
         vault.deposit.value(depositValue)(msg.sender);
         refundWallet.deposit.value(refundValue)(msg.sender);

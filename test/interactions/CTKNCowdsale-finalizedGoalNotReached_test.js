@@ -1,14 +1,11 @@
-const CTKNCrowdsale = artifacts.require('./CTKNCrowdsale.sol')
+const CTKNCrowdsale = artifacts.require('./mocks/MockCTKNCrowdsaleWithMutableDates.sol')
 const MockCTKN = artifacts.require('./mocks/MockCTKN.sol')
 
-const { makeCrowdsale } = require('../utils/fake')
-const { SECONDS_IN_A_DAY, toWei } = require('../utils/ether')
+const { SECONDS_IN_A_DAY, makeCrowdsale } = require('../utils/fake')
+const { toWei, fromWei } = require('../utils/ether')
 const assertThrows = require('../utils/assertThrows')
-const timeTravel = require('../utils/timeTravel')
+const { getLog } = require('../utils/txHelpers')
 
-/*
-  TODO: The timeTravel does not appear to be working.
-*/
 contract('CTKNCrowdsale investor can claim refunds', accounts => {
   const [wallet, refundWallet, punter, anotherPunter] = accounts.slice(1)
 
@@ -35,7 +32,7 @@ contract('CTKNCrowdsale investor can claim refunds', accounts => {
       goal
     })
     await token.transferOwnership(crowdsale.address)
-    await crowdsale.send(amount, { from: punter })
+    // await crowdsale.send(amount, { from: punter })
     await crowdsale.buyTokens(punter, { value: amount, from: punter })
   })
 
@@ -43,10 +40,9 @@ contract('CTKNCrowdsale investor can claim refunds', accounts => {
     it('calling claimRefund throws', () =>
       assertThrows(crowdsale.claimRefund({ from: punter })))
 
-    // TODO: for some reason it's not reporting as closed.
-    xcontext('now wait for it to close', () => {
+    context('now turn back time', () => {
       before(async () => {
-        await timeTravel(SECONDS_IN_A_DAY * 2)
+        tx = await crowdsale.turnBackTime(SECONDS_IN_A_DAY * 2)
       })
 
       it('hasClosed', async () => {
@@ -67,37 +63,17 @@ contract('CTKNCrowdsale investor can claim refunds', accounts => {
         })
 
         context('but goal not reached', () => {
-          const expected = toWei(0.2)
+          const expectedMin = toWei(1.1) // gas costs can vary
 
           before(async () => {
             balance = web3.eth.getBalance(punter)
-            await crowdsale.claimRefund({ from: punter })
+            tx = await crowdsale.claimRefund({ from: punter })
             const newBalance = web3.eth.getBalance(punter)
             refunded = newBalance.minus(balance)
           })
 
-          it('calling claimRefund only refunds the overpayment', () => {
-            assert.equal(refunded.toNumber(), expected.toNumber())
-          })
-        })
-
-        context('and goal reached', () => {
-          const expected = toWei(1.2)
-
-          before(async () => {
-            await crowdsale.send(amount, { from: anotherPunter })
-            await crowdsale.buyTokens(punter, {
-              value: amount,
-              from: anotherPunter
-            })
-            balance = web3.eth.getBalance(anotherPunter)
-            await crowdsale.claimRefund({ from: anotherPunter })
-            const newBalance = web3.eth.getBalance(anotherPunter)
-            refunded = newBalance.minus(balance)
-          })
-
-          it('calling claimRefund only refunds the overpayment', () => {
-            assert.equal(refunded.toNumber(), expected.toNumber())
+          it('calling claimRefund refunds the total amount less gas costs', () => {
+            assert.isTrue(refunded.lt(amount) && refunded.gt(expectedMin))
           })
         })
       })
