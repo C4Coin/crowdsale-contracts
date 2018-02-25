@@ -14,7 +14,7 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
     uint256 public dollarRate;
 
     // use this for overpayments, separate from the refunds in RefundableCrowdsale
-    RefundVault private overpaymentWallet;
+    RefundVault private overpaymentVault;
 
     event DollarRateSet(uint256 dollarRate);
 
@@ -37,7 +37,7 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
     {
         require(_goal <= _cap);
         require(_dollarRate != 0);
-        overpaymentWallet = new RefundVault(_overpaymentWallet);
+        overpaymentVault = new RefundVault(_overpaymentWallet);
         dollarRate = _dollarRate;
     }
 
@@ -51,10 +51,10 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
     }
 
     /**
-     *  @param addr The address to check for a refund balance
+     *  @param addr The address to check for an overpayment balance
      */
-    function refundBalance(address addr) external view returns (uint256) {
-        return overpaymentWallet.deposited(addr);
+    function overpaymentBalance(address addr) external view returns (uint256) {
+        return overpaymentVault.deposited(addr);
     }
 
     /**
@@ -67,30 +67,30 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
         if (!goalReached() && vault.deposited(msg.sender) != 0) {
             vault.refund(msg.sender);
         }
-        if (overpaymentWallet.deposited(msg.sender) != 0) {
-            overpaymentWallet.refund(msg.sender);
+        if (overpaymentVault.deposited(msg.sender) != 0) {
+            overpaymentVault.refund(msg.sender);
         }
     }
 
     /**
      *  Overrides `RefundableCrowdsale` finalization task,
      *  called when owner calls `finalize()`
-     *  simply enables refunds on the refund vault then invokes `super.finalization()`
+     *  Simply enables refunds on the overpayment vault then invokes `super.finalization()`
      */
     function finalization() internal {
-        overpaymentWallet.enableRefunds();
+        overpaymentVault.enableRefunds();
         super.finalization();
     }
 
     /**
      * Overrides `RefundableCrowdsale` fund forwarding.
-     * sends the correct funds to both the vault, and the overpaymentWallet.
+     * sends the correct funds to both the vault, and the overpaymentVault.
      */
     function _forwardFunds() internal {
         uint256 depositValue = _getTokenAmount(msg.value).mul(rate);
-        uint256 refundValue = _getRefundAmount(msg.value);
+        uint256 overpaymentValue = _getOverpaymentAmount(msg.value);
         vault.deposit.value(depositValue)(msg.sender);
-        overpaymentWallet.deposit.value(refundValue)(msg.sender);
+        overpaymentVault.deposit.value(overpaymentValue)(msg.sender);
     }
 
     /**
@@ -109,7 +109,7 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
      *  @param _weiAmount Value in wei to be converted into tokens
      *  @return Number of tokens that can be purchased with the specified _weiAmount
      */
-    function _getRefundAmount(uint256 _weiAmount) internal view returns (uint256) {
+    function _getOverpaymentAmount(uint256 _weiAmount) internal view returns (uint256) {
       return _weiAmount % rate;
     }
 

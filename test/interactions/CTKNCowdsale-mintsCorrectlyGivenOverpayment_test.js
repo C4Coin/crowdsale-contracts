@@ -33,13 +33,13 @@ contract('CTKNCrowdsale minting given overpayment', accounts => {
     const expectedRefund = toWei(0.2).toNumber()
 
     let balance
-    let refundBalance
+    let overpaymentBalance
 
     before(async () => {
       await crowdsale.send(amount, { from: punter })
       await crowdsale.buyTokens(punter, { value: amount, from: punter })
       balance = await token.balanceOf(punter)
-      refundBalance = await crowdsale.refundBalance(punter)
+      overpaymentBalance = await crowdsale.overpaymentBalance(punter)
     })
 
     it('sold the punter the correct number of tokens', async () => {
@@ -48,7 +48,7 @@ contract('CTKNCrowdsale minting given overpayment', accounts => {
 
     // also expect the remaining 0.2 ETH to be set aside for refund.
     it('has no refundable amount for the punter', async () => {
-      assert.equal(refundBalance.toNumber(), expectedRefund)
+      assert.equal(overpaymentBalance.toNumber(), expectedRefund)
     })
   })
 })
