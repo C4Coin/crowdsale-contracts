@@ -6,17 +6,19 @@ const { getLog } = require('../utils/txHelpers')
 const { makeCrowdsale } = require('../utils/fake')
 const { toWei } = require('../utils/ether')
 
-// const BigNumber = web3.BigNumber
-
 contract('CTKNCrowdsale setDollarRate', accounts => {
-  const [wallet] = accounts.slice(1)
+  const [wallet, overpaymentWallet] = accounts.slice(1)
   let crowdsale
   let token
   let tx
 
   before(async () => {
     token = await MockCTKN.new()
-    crowdsale = await makeCrowdsale(CTKNCrowdsale, { wallet, token })
+    crowdsale = await makeCrowdsale(CTKNCrowdsale, {
+      wallet,
+      overpaymentWallet,
+      token
+    })
   })
 
   context('given bad data', () => {

@@ -11,7 +11,7 @@ const send = (method, params = []) =>
   web3.currentProvider.send({ ...base, method, params })
 
 /**
- *  Tell the blockchain to jum ahead in time by a nomnated number of seconds.
+ *  Tell the blockchain to jump ahead in time by a nominated number of seconds.
  *  @param seconds — The number of seconds to jump ahead
  */
 const timeTravel = async seconds => {
