@@ -14,8 +14,10 @@ const crowdsaleData = ({ wallet, overpaymentWallet, token, ...fields }) => {
   // instead we need the rate to represent how many wei one token costs.
   const rate = new BigNumber(1)
 
-  //the default goal is represented in USD cents.
+  // the default goal is represented in USD cents.
   const goal = fields.goal || new BigNumber(1000000000)
+
+  // the default cap is 3 times the goal.
   const cap = fields.cap || goal.times(3)
 
   // as a default let's say
