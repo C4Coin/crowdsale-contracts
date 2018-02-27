@@ -87,7 +87,7 @@ See also [ERC721 — Non-Fungable Token Standard](https://github.com/ethereum/ei
 
     - Price per share
 
-        Priced in USD with a fixed ETH to USD conversion rate determined by the company at the start of the crowdsale.
+        Priced in USD denominated cents with a fixed ETH to USD conversion rate determined by the company at the start of the crowdsale, and which can be updated at any time by the company.
 
     - Nature of securities
 
@@ -147,11 +147,13 @@ See also [ERC721 — Non-Fungable Token Standard](https://github.com/ethereum/ei
   * No maximum individual cap
   * Minimum participation is 1 token.
 
+* Overall cap to be set on deployment of the crowdsale contract (cap both tokens, i.e. shares to be available via Tier 1 Regulation A+ fundraise, and also a fundraise cap set in USD cents.)
+* Fundraising goal to be set on deployment of the crowdsale contract in USD cents.
+* The conversion rate between ETH and tokens (set when the contract is deployed byt able to be chaged by the company.)
+
 #### Other Parameters to be completed.
 
-* Maximum number of participants.
-* Overall cap (in tokens, shares to be available via Tier 1 Regulation A+ fundraise)
-* The conversion rate between ETH and tokens (will be a fixed rate decided by the company closer to the time of sale.)
+* Maximum number of participants. (see [DEV-145](https://c4coin.atlassian.net/browse/DEV-145))
 
 ## Development
 
