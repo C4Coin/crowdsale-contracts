@@ -149,11 +149,13 @@ See also [ERC721 — Non-Fungable Token Standard](https://github.com/ethereum/ei
 
 * Overall cap to be set on deployment of the crowdsale contract (cap both tokens, i.e. shares to be available via Tier 1 Regulation A+ fundraise, and also a fundraise cap set in USD cents.)
 * Fundraising goal to be set on deployment of the crowdsale contract in USD cents.
-* The conversion rate between ETH and tokens (set when the contract is deployed byt able to be chaged by the company.)
+* The conversion rate between ETH and tokens (set when the contract is deployed but able to be changed by the company.)
 
-#### Other Parameters to be completed.
+#### To be completed.
 
 * Maximum number of participants. (see [DEV-145](https://c4coin.atlassian.net/browse/DEV-145))
+* ERC884 token implementation (see [DEV-142](https://c4coin.atlassian.net/browse/DEV-142))
+* Currently the crowdsale's admin functions can only be invoked by the contract owner.  It may be beneficial to allow a range of whitelisted admins to invoke those functions.  (Discussion in [DEV-146](https://c4coin.atlassian.net/browse/DEV-146))
 
 ## Development
 
