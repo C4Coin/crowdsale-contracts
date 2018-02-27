@@ -1,5 +1,7 @@
 # crowdsale-contracts
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/C4Coin/crowdsale-contracts.svg)](https://greenkeeper.io/)
+
 Smart contracts for C4Coin's forthcoming crowdsale
 
 * `develop` — [![CircleCI](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/develop.svg?style=svg)](https://circleci.com/gh/C4Coin/crowdsale-contracts/tree/develop) [![codecov](https://codecov.io/gh/C4Coin/crowdsale-contracts/branch/develop/graph/badge.svg)](https://codecov.io/gh/C4Coin/crowdsale-contracts)
