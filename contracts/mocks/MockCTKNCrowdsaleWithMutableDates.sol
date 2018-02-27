@@ -16,7 +16,7 @@ contract MockCTKNCrowdsaleWithMutableDates is CTKNCrowdsale {
      *  @param _openingTime The time the Crowdsale starts.
      *  @param _closingTime The time the Crowdsale ends.
      *  @param _rate  The number of `wei` needed to buy one token.
-     *  @param _dollarRate The USD to ETH conversion rate.
+     *  @param _usdConversionRate The USD to ETH conversion rate.
      *  @param _cap  The maximum amount of `wei` to be raised.
      *               TODO: this will change to be expressed in USD
      *  @param _goal The minimum amout of `wei` to be raised for the
@@ -31,7 +31,7 @@ contract MockCTKNCrowdsaleWithMutableDates is CTKNCrowdsale {
         uint256 _openingTime,
         uint256 _closingTime,
         uint256 _rate,
-        uint256 _dollarRate,
+        uint256 _usdConversionRate,
         uint256 _cap,
         uint256 _goal,
         address _wallet,
@@ -43,7 +43,7 @@ contract MockCTKNCrowdsaleWithMutableDates is CTKNCrowdsale {
             _openingTime,
             _closingTime,
             _rate,
-            _dollarRate,
+            _usdConversionRate,
             _cap,
             _goal,
             _wallet,

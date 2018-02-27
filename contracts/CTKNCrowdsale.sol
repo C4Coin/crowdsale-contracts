@@ -11,29 +11,33 @@ import 'zeppelin-solidity/contracts/token/ERC20/MintableToken.sol';
 contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale {
     using SafeMath for uint256;
 
-    // the number of wei one US Dollar buys.
-    uint256 public dollarRate;
+    // the number of wei one USD cent buys.
+    uint256 public usdConversionRate;
 
     // use this for overpayments, separate from the refunds in RefundableCrowdsale
     RefundVault private overpaymentVault;
 
     /**
-     *  Fired when the `dollarRate` is set.
-     *  @param _dollarRate  number of wei one US Dollar buys.
+     *  Fired when the `usdConversionRate` is set.
+     *  @param oldRate The old number of wei one USD cent buys.
+     *  @param newRate The new number of wei one USD cent buys.
+     *  @param changedBy The address that triggered the rate change.
      */
-    event DollarRateSet(uint256 _dollarRate);
+    event USDConversionRateSet(
+        uint256 oldRate,
+        uint256 newRate,
+        address changedBy
+    );
 
     /**
      *  @notice Constructor
      *  @param _openingTime The time the Crowdsale starts.
      *  @param _closingTime The time the Crowdsale ends.
      *  @param _rate  The number of `wei` needed to buy one token.
-     *  @param _dollarRate The USD to ETH conversion rate.
-     *  @param _cap  The maximum amount of `wei` to be raised.
-     *               TODO: this will change to be expressed in USD
-     *  @param _goal The minimum amout of `wei` to be raised for the
+     *  @param _usdConversionRate The USD to ETH conversion rate.
+     *  @param _cap  The maximum amount of USD to be raised.
+     *  @param _goal The minimum amout of USD to be raised for the
      *               Crowdsale to allow distribution of tokens.
-     *               TODO: this will change to be expressed in USD
      *  @param _wallet The address to be used to hold the `wei` being deposited to buy tokens.
      *  @param _overpaymentWallet The address to be used to hold the `wei`
      *                            coming from indivudual overpayments.
@@ -43,7 +47,7 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
         uint256 _openingTime,
         uint256 _closingTime,
         uint256 _rate,
-        uint256 _dollarRate,
+        uint256 _usdConversionRate,
         uint256 _cap,
         uint256 _goal,
         address _wallet,
@@ -57,23 +61,44 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
         RefundableCrowdsale(_goal)
     {
         require(_goal <= _cap);
-        require(_dollarRate != 0);
+        require(_usdConversionRate != 0);
         overpaymentVault = new RefundVault(_overpaymentWallet);
-        dollarRate = _dollarRate;
+        usdConversionRate = _usdConversionRate;
     }
 
     /**
-     *  Sets the dollarRate.
-     *  Emits `DollarRateSet`.
-     *  @param _dollarRate the number of `wei` one US Dollar can buy.
+     *  Sets the usdConversionRate.
+     *  Emits `USDConversionRateSet`.
+     *  @param _usdCentsToWei the number of `wei` one USD cent can buy.
      */
-    function setDollarRate(uint256 _dollarRate)
+    function setUSDConversionRate(uint256 _usdCentsToWei)
         public
         onlyOwner
     {
-        require(_dollarRate != 0);
-        dollarRate = _dollarRate;
-        DollarRateSet(dollarRate);
+        require(_usdCentsToWei != 0);
+        uint256 oldRate = usdConversionRate;
+        usdConversionRate = _usdCentsToWei;
+        USDConversionRateSet(oldRate, usdConversionRate, msg.sender);
+    }
+
+    /**
+     * Checks to see if the cap (expressed in USD cents) has been reached.
+     * @return true if the funding cap was reached
+     */
+    function capReached()
+        public
+        view
+        returns (bool)
+    {
+      return weiRaised >= toWei(cap);
+    }
+
+    /**
+     * Checks whether funding goal (expressed in USD cents) was reached.
+     * @return true if funding goal was reached
+     */
+    function goalReached() public view returns (bool) {
+      return weiRaised >= toWei(goal);
     }
 
     /**
@@ -81,7 +106,11 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
      *  @param addr The address to check for an overpayment balance
      *  @return the number of `wei` the address overpaid when buying tokens.
      */
-    function overpaymentBalance(address addr) external view returns (uint256) {
+    function overpaymentBalance(address addr)
+        external
+        view
+        returns (uint256)
+    {
         return overpaymentVault.deposited(addr);
     }
 
@@ -90,7 +119,9 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
      * 1. if crowdsale is unsuccessful refunds the amount they spent on tokens
      * 2. it will also refund the additional amount they deposited over what was spent on tokens.
      */
-    function claimRefund() public {
+    function claimRefund()
+        public
+    {
         require(isFinalized);
         if (!goalReached() && vault.deposited(msg.sender) != 0) {
             vault.refund(msg.sender);
@@ -105,7 +136,9 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
      *  called when owner calls `finalize()`
      *  Simply enables refunds on the overpayment vault then invokes `super.finalization()`
      */
-    function finalization() internal {
+    function finalization()
+        internal
+    {
         overpaymentVault.enableRefunds();
         super.finalization();
     }
@@ -114,7 +147,9 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
      * Overrides `RefundableCrowdsale` fund forwarding.
      * sends the correct funds to both the vault, and the overpaymentVault.
      */
-    function _forwardFunds() internal {
+    function _forwardFunds()
+        internal
+    {
         uint256 depositValue = _getTokenAmount(msg.value).mul(rate);
         uint256 overpaymentValue = _getOverpaymentAmount(msg.value);
         vault.deposit.value(depositValue)(msg.sender);
@@ -128,7 +163,11 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
      *  @param _weiAmount Value in wei to be converted into tokens
      *  @return the whole number of tokens that can be purchased with the specified _weiAmount
      */
-    function _getTokenAmount(uint256 _weiAmount) internal view returns (uint256) {
+    function _getTokenAmount(uint256 _weiAmount)
+        internal
+        view
+        returns (uint256)
+    {
       return uint256(_weiAmount / rate);
     }
 
@@ -138,8 +177,36 @@ contract CTKNCrowdsale is CappedCrowdsale, RefundableCrowdsale, MintedCrowdsale 
      *  @param _weiAmount Value in wei to be converted into tokens
      *  @return the wei amount in excess of what was needed to buy a whole number of tokens.
      */
-    function _getOverpaymentAmount(uint256 _weiAmount) internal view returns (uint256) {
+    function _getOverpaymentAmount(uint256 _weiAmount)
+        internal
+        view
+        returns (uint256)
+    {
       return _weiAmount % rate;
     }
 
+    /**
+     * Overrised parent behavior requiring purchase to respect the funding cap but in USD
+     * @param _beneficiary Token purchaser
+     * @param _weiAmount Amount of wei contributed
+     */
+    function _preValidatePurchase(address _beneficiary, uint256 _weiAmount)
+        internal
+    {
+        require(_beneficiary != address(0));
+        require(_weiAmount != 0);
+        require(weiRaised.add(_weiAmount) <= toWei(cap));
+    }
+
+    /**
+     *  Converts USD cents to wei using the current usdConversionRate.
+     *  @param _usdCents The number of USD cents to convert.
+     */
+    function toWei(uint256 _usdCents)
+        internal
+        view
+        returns (uint256)
+    {
+        return _usdCents.mul(usdConversionRate);
+    }
 }

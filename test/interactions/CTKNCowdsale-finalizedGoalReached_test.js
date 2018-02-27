@@ -5,6 +5,9 @@ const MockCTKN = artifacts.require('./mocks/MockCTKN.sol')
 
 const { SECONDS_IN_A_DAY, makeCrowdsale } = require('../utils/fake')
 const { toWei } = require('../utils/ether')
+const assertThrows = require('../utils/assertThrows')
+
+const BigNumber = web3.BigNumber
 
 contract(
   'CTKNCrowdsale investor can claim refunds (goal reached)',
@@ -24,8 +27,10 @@ contract(
     // goal reached so only refund overpayment less gas costs.
     const expectedMax = amount.minus(rate.times(2))
 
-    // TODO: The goal needs to be set in USD
-    const goal = toWei(1)
+    // Set the goal low, to 1 eth
+    // which at $850 per ETH is
+    // 85000 cents.
+    const goal = new BigNumber(85000)
 
     before(async () => {
       token = await MockCTKN.new()
@@ -62,6 +67,32 @@ contract(
       it('calling claimRefund refunds nothing', () => {
         assert.isTrue(refunded.lt(0)) // the gas amount can vary slightly.
       })
+    })
+
+    context('cap reached', () => {
+      it("the cap hasn't been reached yet", async () => {
+        assert.isFalse(await crowdsale.capReached())
+      })
+
+      it("won't let the cap be exceeded", () =>
+        assertThrows(
+          crowdsale.buyTokens(anotherPunter, {
+            value: toWei(5),
+            from: anotherPunter
+          })
+        ))
+    })
+
+    context('bad data sent to buyTokens', () => {
+      it('throws if passed 0x0 address', () =>
+        assertThrows(
+          crowdsale.buyTokens(0x0, { value: toWei(1), from: anotherPunter })
+        ))
+
+      it('throws if passed 0 amount', () =>
+        assertThrows(
+          crowdsale.buyTokens(anotherPunter, { value: 0, from: anotherPunter })
+        ))
     })
   }
 )

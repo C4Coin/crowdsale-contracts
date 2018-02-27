@@ -62,13 +62,13 @@ contract('CTKNCrowdsale creation', ([owner, wallet, overpaymentWallet]) => {
         })
       ))
 
-    it('throws if given dollarRate of 0', () =>
+    it('throws if given usdConversionRate of 0', () =>
       assertThrows(
         makeCrowdsale(CTKNCrowdsale, {
           wallet,
           overpaymentWallet,
           token,
-          dollarRate: 0
+          usdConversionRate: 0
         })
       ))
 

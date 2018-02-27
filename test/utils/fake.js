@@ -14,20 +14,21 @@ const crowdsaleData = ({ wallet, overpaymentWallet, token, ...fields }) => {
   // instead we need the rate to represent how many wei one token costs.
   const rate = new BigNumber(1)
 
-  // usually this cap is represented in wei but we need it to be in USD.
-  const cap = toWei(100)
+  //the default goal is represented in USD cents.
+  const goal = fields.goal || new BigNumber(1000000000)
+  const cap = fields.cap || goal.times(3)
 
-  // usually the goal is represented in wei but we need it to be in USD.
-  const goal = toWei(50)
-
-  // just set a default dollar rate of half an ETH
-  const dollarRate = toWei(0.5)
+  // as a default let's say
+  // current ETH rate is approx USD 850
+  // so one dollar buys 0.001176470588 ETH
+  // and thus one cent buys 0.00001176470588 ETH
+  const usdConversionRate = toWei(0.00001176470588)
 
   const data = {
     openingTime,
     closingTime,
     rate,
-    dollarRate,
+    usdConversionRate,
     cap,
     goal,
     wallet,
@@ -40,7 +41,7 @@ const crowdsaleData = ({ wallet, overpaymentWallet, token, ...fields }) => {
     data.openingTime,
     data.closingTime,
     data.rate,
-    data.dollarRate,
+    data.usdConversionRate,
     data.cap,
     data.goal,
     data.wallet,

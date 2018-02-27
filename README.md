@@ -7,7 +7,7 @@ Smart contracts for C4Coin's forthcoming crowdsale
 
 ## Overview
 
-It is proposed that C4Coin will launch a [Regulation A+](https://en.wikipedia.org/wiki/Regulation_A#Regulation_A+) compliant token, where each issued token corresponds to a unit of stock in the company.
+It is proposed that C4Coin will launch an ERC20 Token compatible with Delaware General Corporation law, where each issued token corresponds to a unit of stock in the company.
 
 ### Covering Legislation
 
