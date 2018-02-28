@@ -6,7 +6,7 @@ const { getLog } = require('../utils/txHelpers')
 const { makeCrowdsale } = require('../utils/fake')
 const { toWei } = require('../utils/ether')
 
-contract('CTKNCrowdsale setDollarRate', accounts => {
+contract('CTKNCrowdsale setUSDConversionRate', accounts => {
   const [wallet, overpaymentWallet] = accounts.slice(1)
   let crowdsale
   let token
@@ -22,23 +22,27 @@ contract('CTKNCrowdsale setDollarRate', accounts => {
   })
 
   context('given bad data', () => {
-    it('throws if rate is 0', () => assertThrows(crowdsale.setDollarRate(0)))
+    it('throws if rate is 0', () =>
+      assertThrows(crowdsale.setUSDConversionRate(0)))
   })
 
   context('given good data', () => {
-    const dollarRate = toWei(0.75)
+    // let's change it so 1 ETH is US$1000 (nice default)
+    // ie 1 dollar buys 0.001 ETH
+    // 1 cent buys 0.00001 ETH
+    const usdConversionRate = toWei(0.00001)
 
     before(async () => {
-      tx = await crowdsale.setDollarRate(dollarRate)
+      tx = await crowdsale.setUSDConversionRate(usdConversionRate)
     })
 
-    it('fired off the DollarRateSet event', () => {
-      assert.ok(getLog(tx, 'DollarRateSet'))
+    it('fired off the USDConversionRateSet event', () => {
+      assert.ok(getLog(tx, 'USDConversionRateSet'))
     })
 
-    it('set the dollarRate correctly', async () => {
-      const dr = await crowdsale.dollarRate()
-      assert.equal(dr.toNumber(), dollarRate.toNumber())
+    it('set the usdConversionRate correctly', async () => {
+      const dr = await crowdsale.usdConversionRate()
+      assert.equal(dr.toNumber(), usdConversionRate.toNumber())
     })
   })
 })

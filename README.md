@@ -9,7 +9,7 @@ Smart contracts for C4Coin's forthcoming crowdsale
 
 ## Overview
 
-It is proposed that C4Coin will launch a [Regulation A+](https://en.wikipedia.org/wiki/Regulation_A#Regulation_A+) compliant token, where each issued token corresponds to a unit of stock in the company.
+It is proposed that C4Coin will launch an ERC20 Token compatible with Delaware General Corporation law, where each issued token corresponds to a unit of stock in the company.
 
 ### Covering Legislation
 
@@ -89,7 +89,7 @@ See also [ERC721 — Non-Fungable Token Standard](https://github.com/ethereum/ei
 
     - Price per share
 
-        Priced in USD with a fixed ETH to USD conversion rate determined by the company at the start of the crowdsale.
+        Priced in USD denominated cents with a fixed ETH to USD conversion rate determined by the company at the start of the crowdsale, and which can be updated at any time by the company.
 
     - Nature of securities
 
@@ -149,11 +149,15 @@ See also [ERC721 — Non-Fungable Token Standard](https://github.com/ethereum/ei
   * No maximum individual cap
   * Minimum participation is 1 token.
 
-#### Other Parameters to be completed.
+* Overall cap to be set on deployment of the crowdsale contract (cap both tokens, i.e. shares to be available via Tier 1 Regulation A+ fundraise, and also a fundraise cap set in USD cents.)
+* Fundraising goal to be set on deployment of the crowdsale contract in USD cents.
+* The conversion rate between ETH and tokens (set when the contract is deployed but able to be changed by the company.)
 
-* Maximum number of participants.
-* Overall cap (in tokens, shares to be available via Tier 1 Regulation A+ fundraise)
-* The conversion rate between ETH and tokens (will be a fixed rate decided by the company closer to the time of sale.)
+#### To be completed.
+
+* Maximum number of participants. (see [DEV-145](https://c4coin.atlassian.net/browse/DEV-145))
+* ERC884 token implementation (see [DEV-142](https://c4coin.atlassian.net/browse/DEV-142))
+* Currently the crowdsale's admin functions can only be invoked by the contract owner.  It may be beneficial to allow a range of whitelisted admins to invoke those functions.  (Discussion in [DEV-146](https://c4coin.atlassian.net/browse/DEV-146))
 
 ## Development
 

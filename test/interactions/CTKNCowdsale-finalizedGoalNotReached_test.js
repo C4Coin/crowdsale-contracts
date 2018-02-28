@@ -7,6 +7,8 @@ const { SECONDS_IN_A_DAY, makeCrowdsale } = require('../utils/fake')
 const { toWei } = require('../utils/ether')
 const assertThrows = require('../utils/assertThrows')
 
+const BigNumber = web3.BigNumber
+
 contract('CTKNCrowdsale investor can claim refunds', accounts => {
   const [wallet, overpaymentWallet, punter] = accounts.slice(1)
 
@@ -20,8 +22,9 @@ contract('CTKNCrowdsale investor can claim refunds', accounts => {
   // pay 1.2 ETH
   const amount = toWei(1.2)
 
-  // TODO: The goal needs to be set in USD
-  const goal = toWei(2)
+  // Set the goal low, to 2 eth
+  // which at $850 per ETH is $1700
+  const goal = new BigNumber(1700 * 100)
 
   before(async () => {
     token = await MockCTKN.new()
