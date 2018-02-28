@@ -29,8 +29,7 @@ contract(
 
     // Set the goal low, to 1 eth
     // which at $850 per ETH is
-    // 85000 cents.
-    const goal = new BigNumber(85000)
+    const goal = new BigNumber(850 * 100)
 
     before(async () => {
       token = await MockCTKN.new()

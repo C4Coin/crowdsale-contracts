@@ -15,7 +15,7 @@ const crowdsaleData = ({ wallet, overpaymentWallet, token, ...fields }) => {
   const rate = new BigNumber(1)
 
   // the default goal is represented in USD cents.
-  const goal = fields.goal || new BigNumber(1000000000)
+  const goal = fields.goal || new BigNumber(10000000 * 100)
 
   // the default cap is 3 times the goal.
   const cap = fields.cap || goal.times(3)

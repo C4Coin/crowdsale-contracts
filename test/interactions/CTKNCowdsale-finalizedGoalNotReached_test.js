@@ -24,8 +24,7 @@ contract('CTKNCrowdsale investor can claim refunds', accounts => {
 
   // Set the goal low, to 2 eth
   // which at $850 per ETH is $1700
-  // ie 170000 cents.
-  const goal = new BigNumber(170000)
+  const goal = new BigNumber(1700 * 100)
 
   before(async () => {
     token = await MockCTKN.new()
