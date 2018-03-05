@@ -117,6 +117,16 @@ contract('CTKNCrowdsale creation', ([owner, wallet, overpaymentWallet]) => {
       assertThrows(
         makeCrowdsale(CTKNCrowdsale, { wallet, overpaymentWallet, token: 0x0 })
       ))
+
+    it('throws if given zero USD conversion rate', () =>
+      assertThrows(
+        makeCrowdsale(CTKNCrowdsale, {
+          usdConversionRate: 0,
+          wallet,
+          overpaymentWallet,
+          token
+        })
+      ))
   })
 
   context('Crowdsale given good data', () => {
