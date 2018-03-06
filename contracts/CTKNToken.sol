@@ -188,11 +188,17 @@ contract CTKNToken is ERC884Draft, MintableToken {
         // and update all the associated mappings
         verified[original] = ZERO_BYTES;
         cancellations[original] = replacement;
+        // get the index of the original
         uint256 holderIndex = holderIndices[original] - 1;
+        // overwrite the original with the new
         stockholders[holderIndex] = replacement;
+        // update the index of the replacement
         holderIndices[replacement] = holderIndices[original];
+        // zero out the index of the original
         holderIndices[original] = 0;
+        // migrate the balance
         balances[replacement] = balances[original];
+        // zero out the original balance
         balances[original] = 0;
         VerifiedAddressSuperseded(original, replacement, msg.sender);
     }
