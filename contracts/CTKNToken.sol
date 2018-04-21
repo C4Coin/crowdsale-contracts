@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.23;
 
 import 'zeppelin-solidity/contracts/token/ERC20/MintableToken.sol';
 import './ERC884Draft.sol';
@@ -123,7 +123,7 @@ contract CTKNToken is ERC884Draft, MintableToken {
         require(hash != ZERO_BYTES);
         require(verified[addr] == ZERO_BYTES);
         verified[addr] = hash;
-        VerifiedAddressAdded(addr, hash, msg.sender);
+        emit VerifiedAddressAdded(addr, hash, msg.sender);
     }
 
     /**
@@ -140,7 +140,7 @@ contract CTKNToken is ERC884Draft, MintableToken {
         require(balances[addr] == 0);
         if (verified[addr] != ZERO_BYTES) {
             verified[addr] = ZERO_BYTES;
-            VerifiedAddressRemoved(addr, msg.sender);
+            emit VerifiedAddressRemoved(addr, msg.sender);
         }
     }
 
@@ -163,7 +163,7 @@ contract CTKNToken is ERC884Draft, MintableToken {
         bytes32 oldHash = verified[addr];
         if (oldHash != hash) {
             verified[addr] = hash;
-            VerifiedAddressUpdated(addr, oldHash, hash, msg.sender);
+            emit VerifiedAddressUpdated(addr, oldHash, hash, msg.sender);
         }
     }
 
@@ -200,7 +200,7 @@ contract CTKNToken is ERC884Draft, MintableToken {
         balances[replacement] = balances[original];
         // zero out the original balance
         balances[original] = 0;
-        VerifiedAddressSuperseded(original, replacement, msg.sender);
+        emit VerifiedAddressSuperseded(original, replacement, msg.sender);
     }
 
     /**
